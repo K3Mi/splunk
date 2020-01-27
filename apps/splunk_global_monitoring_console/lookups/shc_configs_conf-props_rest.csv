@@ -1,0 +1,205 @@
+appName,title,"ANNOTATE_PUNCT","BREAK_ONLY_BEFORE","BREAK_ONLY_BEFORE_DATE","DATETIME_CONFIG","EVENT_BREAKER_ENABLE","INDEXED_EXTRACTIONS","KV_MODE","LEARN_MODEL","LEARN_SOURCETYPE","LINE_BREAKER","MAX_EVENTS","MAX_TIMESTAMP_LOOKAHEAD","MUST_BREAK_AFTER","SHOULD_LINEMERGE","TIME_FORMAT","TIME_PREFIX",TRUNCATE,description,maxDist
+SplunkAdmins,"lookup_watcher",1,"",1,NONE,,,,1,1,,256,128,"",0,,,10000,,100
+SplunkAdmins,"lookup_watcher:log",1,"",1,"/etc/datetime.xml",,,,1,1,"([\r\n]+)20\d\d-\d\d-",256,128,"",0,"%Y-%m-%d %H:%M:%S,%3N","^",100000,,100
+SplunkAdmins,"source::.../lookup_watcher.log",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+SplunkAdmins,"splunk:search:info",1,"",1,NONE,,,,1,1,,256,128,"",0,,,10000,,100
+SplunkAdmins,"splunk:searchlog",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,"%m-%d-%Y %H:%M:%S.%3N","^",10000,,100
+"Splunk_TA_linux","linux:audit",1,"",1,"/etc/datetime.xml",,,,1,1,,256,12,"",0,"%s.%3N","msg=audit\(",10000,"Audit events from linux host using monitoring audit logs",100
+"Splunk_TA_linux","linux:collectd:graphite",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,12,"",0,"%s.%3N","\S+\s+\S+\s+",10000,"Metrics collected from linux host using collectd-write_graphite plugin",100
+"Splunk_TA_linux","linux:collectd:http:json",1,"",1,"/etc/datetime.xml",,,json,1,1,"([\[|\,]){\""values\"":",256,128,"",0,"%s.%3N","""time"":\s*",10000,"Metrics collected from linux host using collectd-write_http plugin in json",100
+"Splunk_TA_linux","linux:collectd:http:metrics",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,"%s.%3N","""time"":\s*",10000,"Metrics collected from linux host using collectd-write_http plugin for metrics index",100
+"Splunk_TA_linux","source::.../var/log/audit/audit.log(.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","Linux:SELinuxConfig",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","aix_secure",1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix",bandwidth,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix","bash_history",1,"",1,CURRENT,1,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","config_file",1,"",1,NONE,,,none,0,0,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",cpu,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",df,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",dhcpd,1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","fs_notification",1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix",hardware,1,"",1,CURRENT,,,,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",interfaces,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",iostat,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",1,,,1000000,,100
+"Splunk_TA_nix",lastlog,1,"",1,CURRENT,,,,0,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix","linux_secure",1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",0,,,10000,"Format for the /var/log/secure file containing all security related messages on a Linux machine",100
+"Splunk_TA_nix",lsof,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",netstat,1,"",1,CURRENT,,,,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",nfsiostat,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",1,,,10000,,100
+"Splunk_TA_nix",openPorts,1,"",1,CURRENT,,,,1,1,,256,128,"",0,,,1000000,,100
+"Splunk_TA_nix","osx_secure",1,"",0,"/etc/datetime.xml",1,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix",package,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",protocol,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",ps,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix","source::(....(config|conf|cfg|inii|cfg|emacs|ini|license|lng|plist|presets|properties|props|vim|wsdl))",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::*:SSHDConfig",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::*:VSFTPDConfig",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris):CPUTime",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris):FreeDiskSpace",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris):LocalProcesses",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris):Memory",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):ListeningPorts",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):Service",1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):Update",1,"",1,"/etc/datetime.xml",1,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):Uptime",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(AIX|FreeBSD|HPUX|Linux|OSX|Solaris|Unix):Version",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(Linux|Unix):Service",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(Solaris|OSX):Service",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.*|sample.*.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.diskio|sample.diskio.linux|solaris.diskio|aix.diskio|freebsd.diskio)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(linux.listeningports|sample.listeningports.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.localprocesses|sample.localprocesses.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.memory|sample.memory.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.selinuxconfig|sample.selinuxconfig.linux|sample.selinuxChecker.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.service|sample.service.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.sshdconfig|sample.sshdconfig.linux|sample.sshdChecker.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.update|sample.update.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.uptime|sample.uptime.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.useraccounts|sample.useraccounts.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(linux.version|sample.version.linux)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(nfsiostat)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...(osx.*|sample.*.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(osx.memory|sample.memory.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(osx.service|sample.service.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(osx.sshdconfig|sample.sshdconfig.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(osx.update|sample.update.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(osx.version|sample.version.osx)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(solaris.*|sample.*.solaris)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(solaris.memory|sample.memory.solaris)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(solaris.service|sample.service.solaris)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...(solaris.version|sample.version.solaris)",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....aix_secure",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....dhcpd",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....fs_notification",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....linux_secure",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....nix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....osx_secure",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::....syslog",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::.../sample.config",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...linux.cputime",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...linux.df",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...linux.ps",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...linux.vmstat",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...protocol.sample",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::...sample.*.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.cputime.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.freediskspace.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.localprocesses.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.memory.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.openPortsEnhanced.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.passwd.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.service.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.sshdChecker.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.update.osx",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.uptime.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.version.unix",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...sample.vsftpdChecker.linux",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::...top.sample",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",0,,,10000,,100
+"Splunk_TA_nix","source::/etc/passwd*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix","source::/etc/shadow*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_nix",syslog,1,"",1,"/etc/datetime.xml",1,,,1,1,,256,32,"",0,"%b %d %H:%M:%S",,10000,"Output produced by many syslog daemons, as described in RFC3164 by the IETF",3
+"Splunk_TA_nix",time,1,"",1,CURRENT,,,,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",top,1,"",1,CURRENT,,,multi,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",usersWithLoginPrivs,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_nix",vmstat,1,"",1,CURRENT,,,,1,1,"(^$|[\r\n]+[\r\n]+)",256,128,"",1,,,1000000,,100
+"Splunk_TA_nix",who,1,"",1,CURRENT,,,multi,1,1,"^((?!))$",256,128,"",0,,,1000000,,100
+"Splunk_TA_stream","source::...sample.stream_dns",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","source::...sample.stream_http",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","source::...sample.stream_smtp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","source::...sample.stream_ssl",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","source::stream:*",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,28,"",0,,"\""endtime\"":\""",100000000,,100
+"Splunk_TA_stream","stream:dhcp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:dns",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:ftp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:http",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:imap",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:log",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,28,"",0,,"\""timestamp\"":\""",10000,,100
+"Splunk_TA_stream","stream:mysql",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:netflow",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:pop3",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:postgres",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:smtp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:snmp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:stats",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,28,"",0,,"\""timestamp\"":\""",10000,,100
+"Splunk_TA_stream","stream:tcp",1,"",1,"/etc/datetime.xml",,,JSON,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:tds",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:tns",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:udp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"Splunk_TA_stream","stream:xmpp",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"analysis_of_splunkbase_apps",splunkapps,1,"",1,CURRENT,,json,none,1,1,,256,128,"",1,"%b %d, %Y",,0,,100
+"config_explorer","source::...config_explorer.log",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"nmon:fromsyslog",1,"",1,"/etc/datetime.xml",,,,1,1,"([\r\n]+)[a-zA-Z0-9\-\_\:\s]*timestamp=\""",100000,26,"",0,"%s","timestamp=""",0,,100
+nmon,"nmon_clean",1,"",1,"/etc/datetime.xml",,,,1,1,"([\n\r]+)\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2}",256,19,"",0,"%d-%m-%Y %H:%M:%S","^",999999,,100
+nmon,"nmon_clean:fromsyslog",1,"Starting nmon cleaning",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,"%c","\w*\s",10000,,100
+nmon,"nmon_collect",1,"",1,"/etc/datetime.xml",,,,1,1,"([\n\r]+)\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2}",256,19,"",0,"%d-%m-%Y %H:%M:%S","^",999999,,100
+nmon,"nmon_collect:fromsyslog",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"nmon_config",1,"",1,"/etc/datetime.xml",,,none,1,1,"([\r\n]+)CONFIG,\d{2}-\w{3}-\d{4}:\d{2}:\d{2}\.\d{2},",100000,30,"",0,"%d-%b-%Y:%H:%M.%S","^CONFIG,",0,,100
+nmon,"nmon_config:fromhttp",1,"",1,"/etc/datetime.xml",,,,1,1,"([\r\n]+)timestamp=\""",100000,128,"",0,"%s","timestamp=""",0,,100
+nmon,"nmon_config:fromsyslog",1,"",1,"/etc/datetime.xml",,,none,1,1,"([\r\n]+)[a-zA-Z0-9\-\_\:\s]*timestamp=\""",100000,128,"",0,"%s","timestamp=""",0,,100
+nmon,"nmon_data",0,"",1,"/etc/datetime.xml",,csv,none,1,1,,256,128,"",0,"%d-%m-%Y %H:%M:%S",,10000,,100
+nmon,"nmon_data:fromhttp",1,"",1,"/etc/datetime.xml",,,auto,1,1,,256,26,"",0,"%s","timestamp=""",10000,,100
+nmon,"nmon_data:fromsyslog",1,"",1,"/etc/datetime.xml",,,auto,1,1,,256,26,"",0,"%s","timestamp=""",10000,,100
+nmon,"nmon_data:json:extracted",0,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,"%d-%m-%Y %H:%M:%S","\""ZZZZ\"":\s""",10000,,100
+nmon,"nmon_data:json:indexed",0,"",1,"/etc/datetime.xml",,json,json,1,1,,256,128,"",1,"%d-%m-%Y %H:%M:%S",,10000,,100
+nmon,"nmon_processing",1,"",1,"/etc/datetime.xml",,,none,1,1,"([\n\r]+)\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2}",256,19,"",0,"%d-%m-%Y %H:%M:%S","^",999999,,100
+nmon,"nmon_processing:fromsyslog",1,"nmon2csv:",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,"%d-%m-%Y %H:%M:%S","nmon2csv:",10000,,100
+nmon,"source::...AIX_CPU_ALL_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...AIX_LPAR_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...AIX_MEM_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...DISKXFER_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Linux_CPU_ALL_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Linux_MEM_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Linux_TOP_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Solaris_CPU_ALL_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Solaris_MEM_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Solaris_TOP_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::...Solaris_WLM_sample.csv",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::configdata:http",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::perfdata:http",1,"",1,"/etc/datetime.xml",,,auto,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::perfdata:json:extracted",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::perfdata:json:indexed",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+nmon,"source::perfdata:syslog",1,"",1,"/etc/datetime.xml",,,auto,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_addon-builder","source::...splunk_app_addon-builder*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_addon-builder","source::...splunk_app_addon-builder_..._metric_events.log",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_addon-builder","splunk:aob:monitor:metric",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",0,"%s%3N","mcollector_event_ts"":\s+",100000,,100
+"splunk_app_addon-builder","splunk:tabuilder:validation",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","aws:autoscaling:firehose",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","aws:cloudtrail",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","aws:cloudwatchlogs",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","aws:rds:firehose",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","aws:s3",1,"",1,"/etc/datetime.xml",,,none,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","em_metrics",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,"For SAI metrics.",100
+"splunk_app_infrastructure","source::(?-i).../var/log/vmware/vpxd/vpxd-profiler-\d+.log(?:.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::(?-i)...\\VMware\\vCenterServer\\logs\\vmware-vpx\\vpxd-profiler-\d+.log(?:.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::...(/|\\)var(/|\\)log(/|\\)splunk(/|\\)sai*.log*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/*_configuration.log",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/hydra_access*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/hydra_gateway*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/hydra_scheduler*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/hydra_worker*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::.../var/log/splunk/ta_vmware_hierarchy_agent*",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","source::vmware:esxlog:...",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","splunk_app_infrastructure",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,"For SAI internal logs.",100
+"splunk_app_infrastructure","vmware:esxlog:vmkernel",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:esxlog:vmkwarning",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:inv:clustercomputeresource",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:inv:datastore",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:inv:hostsystem",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:inv:vm",1,"",1,"/etc/datetime.xml",,,json,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:cim-diag",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:sms",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:stats",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:vim-tomcat-shared",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:vpxd",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:vpxd-profiler",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_app_infrastructure","vmware:vclog:vws",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","log2metrics_csv",1,"",1,"",,csv,,1,1,"([\r\n]+)",256,128,"",1,,,10000,"Comma-separated value format. Log-to-metrics processing converts the numeric values in csv events into metric data points.",100
+"splunk_internal_metrics","log2metrics_json",1,"",1,"",,json,,1,1,"([\r\n]+)",256,128,"",1,,,10000,"JSON-formatted data. Log-to-metrics processing converts the numeric values in json keys into metric data points.",100
+"splunk_internal_metrics","log2metrics_keyvalue",1,"",1,"",,,,1,1,"([\r\n]+)",256,128,"",1,,,10000,"'<key>=<value>' formatted data. Log-to-metrics processing converts the keys with numeric values into metric data points.",100
+"splunk_internal_metrics","source::.../var/log/introspection/disk_objects.log(.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","source::.../var/log/introspection/resource_usage.log(.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","source::.../var/log/splunk/metrics.log(.\d+)?",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","splunk_intro_disk_objects",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","splunk_intro_resource_usage",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100
+"splunk_internal_metrics","splunk_metrics_log",1,"",1,"/etc/datetime.xml",,,,1,1,,256,128,"",1,,,10000,,100

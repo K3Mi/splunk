@@ -1,0 +1,163 @@
+<form theme="dark">
+  <label>Splunk - UF - 02 - Forwarder Indexing Output - Dashboard - v1</label>
+  <search id="baseSearch">
+    <query>index=_internal sourcetype=splunkd component=TcpOutputProc |fields host splunk_server
+    | eval splunk_server=upper(splunk_server), host=upper(host)
+    | eval Indexer_Cluster = case ( match(splunk_server, "^ICP"), "CCB", match(splunk_server, "-SPLN*K-IN*DX\d+"), "Digital", match(splunk_server, "^PSIN|^ESO"), "UAT", true(), "Other") 
+    | eval Forwarder_Type = case ( match(host, "^AH|^AN"), "ATM", true(), "Other") 
+    | stats values(Indexer_Cluster) as Indexer_Cluster values(Forwarder_Type) as Forwarder_Type dc(Indexer_Cluster) as Num_Indexer_Cluster count by host
+    | fields host Indexer_Cluster Forwarder_Type Num_Indexer_Cluster
+    | search host=$host$ AND Indexer_Cluster=$Indexer_Cluster$ AND Forwarder_Type=$Forwarder_Type$
+      </query>
+    <earliest>$TimeRangePkr.earliest$</earliest>
+    <latest>$TimeRangePkr.latest$</latest>
+  </search>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="TimeRangePkr" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="Indexer_Cluster" searchWhenChanged="true">
+      <label>Indexer Cluster</label>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <fieldForLabel>Indexer_Cluster</fieldForLabel>
+      <fieldForValue>Indexer_Cluster</fieldForValue>
+      <search base="baseSearch">
+        <query>|stats count by Indexer_Cluster | fields Indexer_Cluster</query>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="Forwarder_Type" searchWhenChanged="true">
+      <label>Forwarder Type</label>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <fieldForLabel>Forwarder_Type</fieldForLabel>
+      <fieldForValue>Forwarder_Type</fieldForValue>
+      <search base="baseSearch">
+        <query>| stats count by Forwarder_Type | fields Forwarder_Type</query>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="text" token="host" searchWhenChanged="true">
+      <label>Forwarder</label>
+      <initialValue>*</initialValue>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Forwarders By Indexer Cluster</title>
+      <chart>
+        <search base="baseSearch">
+          <query>|  stats count by Indexer_Cluster</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Forwarders By Indexer Cluster</title>
+      <table>
+        <search base="baseSearch">
+          <query>|  stats count by Indexer_Cluster
+| sort - count</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#3863A0" midColor="#F7BC38" minColor="#65A637"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>By Forwarder Type</title>
+      <chart>
+        <search base="baseSearch">
+          <query>|  stats count by Forwarder_Type</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Number of Forwarders</title>
+      <single>
+        <search base="baseSearch">
+          <query>|  stats count(host) as host</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x65a637","0x6db7c6"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="unit">Forwarders</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Forwarders by Indexer Cluster over time</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunkd component=TcpOutputProc host=$host$ 
+| fields _time host splunk_server 
+| eval Indexer_Cluster = case ( match(splunk_server, "^icp"), "CCB", match(splunk_server, "-indx\d+"), "Digital", match(splunk_server, "^psin|^eso"), "UAT", true(), "Other") 
+| eval Forwarder_Type = case ( match(host, "^AH|^AN"), "ATM", true(), "Other") 
+| search Indexer_Cluster=$Indexer_Cluster$ AND Forwarder_Type=$Forwarder_Type$ 
+| timechart dc(host) as hosts by Indexer_Cluster</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Forwarders List</title>
+      <table>
+        <search base="baseSearch">
+          <query>| table host Indexer_Cluster Forwarder_Type Num_Indexer_Cluster</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">true</option>
+        <option name="wrap">true</option>
+        <format type="color" field="host">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Indexer_Cluster">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Num_Indexer_Cluster">
+          <colorPalette type="minMidMax" maxColor="#31A35F" midColor="#FFFFFF" minColor="#49443B"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+        <format type="color" field="Forwarder_Type">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

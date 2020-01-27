@@ -1,0 +1,180 @@
+<form theme="dark">
+  <label>Splunk - SH - 15 - End User Experience Analysis - Dashboard - v1</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="TimeRangePkr" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="user" searchWhenChanged="true">
+      <label>User</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>| rest /services/authentication/users 
+| eval title=upper(title) 
+| dedup title 
+| fields title 
+| sort title</query>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <search>
+          <query>index=_internal source=*splunkd_access.log* NOT "/streams/" (host=iaasln00001933 OR host=iaasln00001935 OR host=iaasln00001937 OR host=iaasln00001938 OR host=iaasn00008920 OR host=iaasn00030686 OR host=iaasn00033501 OR host=iaasn00033528 OR host=iaasn00033578 OR host=iaasn00041951 OR host=iaasn00042924 OR host=iaasn00008921 ) 
+| where spent&gt;999 
+| eval spent=ceiling(spent/1000) 
+| eval desc=case(spent&lt;=1, "OKAY", spent&lt;30, "WARNING", spent&gt;29,
+    "DANGER") 
+| stats count by uri_path, spent, desc, _time 
+| search spent &gt;= 1 
+| timechart bins=200 median(spent) AS Median perc90(spent) AS "90th Percentile" max(spent) AS
+    Maximum 
+| eval DANGER=30 
+| rename DANGER AS "Splunk Web timeout threshold"</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>User activity (last 7 days)</title>
+        <search>
+          <query>index=_internal user="$user$" (sourcetype=splunk_web_access OR sourcetype=splunkd_access) 
+| timechart span=1h count by sourcetype</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>User executed searches (last 24 hours)</title>
+        <search>
+          <query>(action=search index=_audit user="$user$" (id=* OR search_id=*)) 
+| eval search_id=if(isnull(search_id),id,search_id) 
+| replace '*' with * in search_id 
+| search (search_id!=rt_* search_id!=searchparsetmp* search_id=*) 
+| rex field=_raw "search='(?&lt;search&gt;.*?)', autojoin" 
+| rex field=_raw "savedsearch_name=\"(?&lt;savedsearch_name&gt;.*?)\"\\]\\[" 
+| eval search=case(isnotnull(search),search,(isnull(search) AND (savedsearch_name != "")),("Scheduled search name : " . savedsearch_name),(isnull(search) AND (savedsearch_name == "")),("SID : " . search_id)), user=if((user == "n/a"),"nobody",user) 
+| stats min(_time) as _time last(user) as user last(search) as search by search_id 
+| search (search!=*_audit* search!=*_internal* search!=typeahead* search!="|history*" search_id!=subsearch_* search_id=*) 
+| stats count values(user) as User(s) by search 
+| sort 50 - count 
+| fields + count, "User(s)", search 
+| search NOT "User(s)" IN ("splunk-system-user")</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <format type="color" field="search">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="User(s)">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Unique User Activity Per Search Head</title>
+        <search>
+          <query>index=_internal `Search_Head_Cluster` sourcetype=splunkd_access "/services/search/jobs" 
+| kv access-extractions 
+| search uri=/services/search/jobs/* user!="-" 
+| timechart dc(user) by host span=15 useother=false limit=20</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Search Run Time By User</title>
+      <table>
+        <search>
+          <query>| tstats SUMMARIESONLY=TRUE ALLOW_OLD_SUMMARIES=TRUE 
+    count 
+    FROM DATAMODEL=Splunk_Audit.Search_Activity 
+    WHERE Search_Activity.total_run_time &gt; 0
+    AND Search_Activity.user != "splunk-system-user"
+    BY _time Search_Activity.search_id Search_Activity.user Search_Activity.info Search_Activity.search_type Search_Activity.total_run_time 
+| rename "Search_Activity.*" as "*" 
+| fields _time search_id user info search_type total_run_time 
+| join search_id 
+    [| tstats SUMMARIESONLY=TRUE ALLOW_OLD_SUMMARIES=TRUE 
+        count 
+        FROM DATAMODEL=Splunk_Audit.Search_Activity 
+        BY _time Search_Activity.search_id Search_Activity.search 
+    | rename "Search_Activity.*" as "*" 
+    | fields _time search_id search ] 
+| eval total_run_time_min=round(total_run_time/60,2) 
+| eval user=upper(user) 
+| where total_run_time_min &gt; 5 
+| stats values(total_run_time_min) as total_run_time_min count by _time user search_type info search 
+| table _time user search_type info total_run_time_min search count|sort -total_run_time_min</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <format type="color" field="total_run_time_min">
+          <colorPalette type="minMidMax" maxColor="#D93F3C" midColor="#F7BC38" minColor="#3863A0"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+        <format type="color" field="search">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="user">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="search_type">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="info">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

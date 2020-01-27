@@ -1,0 +1,524 @@
+<form theme="dark">
+  <label>Splunk - SH - 08 - TSAM Monthly Metrics Reporting - Dashboard - v2</label>
+  <fieldset submitButton="true">
+    <input type="time" token="TimeRangePkr" searchWhenChanged="false">
+      <label>Time Range</label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Ingestion Errors</title>
+      <single>
+        <search>
+          <query>(NOT data_sourcetype=http_event_collector_metrics NOT data_sourcetype=kvstore NOT data_sourcetype=mongod NOT data_sourcetype=splunk_* NOT data_sourcetype=splunkd NOT data_sourcetype=splunkd_* splunk_server_group=dmc_group_indexer index=_internal source=*splunkd.log 
+(log_level=ERROR OR log_level=WARN) 
+(component=AggregatorMiningProcessor OR component=DateParserVerbose OR component=LineBreakingProcessor)) 
+| stats count As Total_Errors
+| append [| tstats count as Total_Indexed WHERE index=*] 
+| stats values(*) as * 
+| eval ratio = (Total_Errors / Total_Indexed)*100 
+| table ratio</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.0000</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xd93f3c"]</option>
+        <option name="rangeValues">[0.05,0.5]</option>
+        <option name="refresh.display">preview</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">Ingestion Errors</option>
+        <option name="unit">%</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Skipped Search Percentage</title>
+      <single>
+        <search>
+          <query>index=_internal sourcetype=scheduler search_group=dmc_group_search_head  (status="success" OR status="completed" OR status="skipped") | bin _time span=1h | streamstats count(eval(status=="success" OR status="completed" OR status=="skipped")) AS total_exec, count(eval(status=="skipped")) AS skipped_exec 
+| eval skip_ratio=round(((skipped_exec / total_exec) * 100),2) 
+| fields skip_ratio | timechart span=1h eval(round(avg(skip_ratio),2)) as "Skipped Search %" partial=f</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>10</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xd93f3c"]</option>
+        <option name="rangeValues">[0.05,0.5]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendDisplayMode">percent</option>
+        <option name="underLabel">Skipped Search</option>
+        <option name="unit">%</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Customer Logs Ingestion Delay</title>
+      <chart>
+        <search>
+          <query>| tstats count min(_indextime) as min, avg(_indextime) as avg, max(_indextime) as max where index=* by _time span=1m 
+| foreach min avg max 
+    [ eval &lt;&lt;FIELD&gt;&gt; = &lt;&lt;FIELD&gt;&gt; - _time] 
+| bin span=30m _time as tmp
+| eventstats sum(count) as sum by tmp
+| eval avg = count * avg / sum
+| timechart span=30m min(min) as min sum(avg) as avg max(max) as max</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">avg</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Splunk Logs Ingestion Delay</title>
+      <chart>
+        <search>
+          <query>| tstats count min(_indextime) as min, avg(_indextime) as avg, max(_indextime) as max where index=_* by _time span=1m 
+| foreach min avg max 
+    [ eval &lt;&lt;FIELD&gt;&gt; = &lt;&lt;FIELD&gt;&gt; - _time] 
+| bin span=30m _time as tmp
+| eventstats sum(count) as sum by tmp
+| eval avg = count * avg / sum
+| timechart span=30m min(min) as min sum(avg) as avg max(max) as max</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">avg</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Sourcetype Breakdown</title>
+      <table>
+        <search>
+          <query>| tstats count where index=* by sourcetype | stats sum(eval(if(match(sourcetype, "-too_small$$|-\d+$$"),1,0))) as "Learned Sourcetypes" dc(sourcetype) as "Total Sourcetypes"</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Ingestion Errors by Sourcetype</title>
+      <table>
+        <search>
+          <query>index=_internal sourcetype=splunkd source=*splunkd.log 
+    (component=AggregatorMiningProcessor OR component=LineBreakingProcessor OR component=DateParserVerbose)
+    (log_level=WARN OR log_level=ERROR) 
+| rex field=message "Context: source::(?&lt;context_source&gt;[^\|]*?)\|host::(?&lt;context_host&gt;[^\|]*?)\|(?&lt;context_sourcetype&gt;[^\|]*?)\|" 
+| eval data_source = if(isnull(data_source) AND isnotnull(context_source), context_source, data_source) 
+| eval data_sourcetype = if(isnull(data_sourcetype) AND isnotnull(context_sourcetype), context_sourcetype, data_sourcetype) 
+| stats
+    count(eval(component=="LineBreakingProcessor" OR component=="DateParserVerbose" OR component=="AggregatorMiningProcessor")) as total_issues
+    dc(data_source) AS "Source Count"
+    count(eval(component=="LineBreakingProcessor")) AS "Line Breaking Issues"
+    count(eval(component=="DateParserVerbose")) AS "Timestamp Parsing Issues"
+    count(eval(component=="AggregatorMiningProcessor")) AS "Aggregation Issues" by data_sourcetype 
+| sort - total_issues 
+| where total_issues &gt;= 1000 
+| rename
+    data_sourcetype as sourcetype 
+| join sourcetype 
+    [| tstats count where index=* by sourcetype 
+    | rename count as totalEvents] 
+| eval percErrs=round(100*(total_issues/totalEvents),2) 
+| table sourcetype, totalEvents, total_issues, percErrs, "Source Count", "Line Breaking Issues", "Timestamp Parsing Issues", "Aggregation Issues" 
+| rename sourcetype AS Sourcetype, totalEvents AS "Total Events", percErrs AS "Error %", total_issues AS "Total Issues" 
+| head 5</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">5</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Avg Search Completion Time &amp; Std Dev</title>
+      <chart>
+        <search>
+          <query>index=_audit info=completed search_group=dmc_group_search_head
+| timechart span=1d avg(total_run_time) as avg_run_time, stdev(total_run_time) as std_dev</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">std_dev</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Completed Searches per day</title>
+      <chart>
+        <search>
+          <query>(search_id!="rsa_*" action=search info=completed earliest=-1mon search_group=dmc_group_search_head index=_audit sourcetype=audittrail) 
+| eval user=if((user == "n/a"),null(),user), search_type=case(match(search_id,"^SummaryDirector_"),"summarization",match(savedsearch_name,"^_ACCELERATE_"),"acceleration",match(search_id,"^((rt_)?scheduler__|alertsmanager_)"),"scheduled",match(search_id,"\\d{10}\\.\\d+(_[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12})?$$"),"ad hoc",true(),"other"), search=if((isnull(savedsearch_name) OR (savedsearch_name == "")),search,savedsearch_name) 
+| where isnotnull(search) 
+| timechart span=1d count as "search count" partial=f</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Search Type Breakdown</title>
+      <chart>
+        <search>
+          <query>index=_audit search_group=dmc_group_search_head  search_id=* info=completed | eval searchtype=if(savedsearch_name="","AdHoc","Scheduled")| eval searchtype=if(match(search_id,"^rt_*"),"Realtime",searchtype) 
+| timechart span=1d count by searchtype partial=f</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked100</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Orphaned Searches</title>
+      <table>
+        <search>
+          <query>| rest timeout=600 /servicesNS/-/-/saved/searches add_orphan_field=yes count=0 
+| search orphan=1 disabled=0 is_scheduled=1 
+| stats count as Orphans</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Apps Overview</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=*.*.splunkcloud.com /services/apps/local 
+| search disabled=0 splunk_server=sh*.*.splunkcloud.com 
+| table title 
+| append 
+    [ search index=_internal host=sh*.*.splunkcloud.com sourcetype=splunkd_ui_access method=GET uri="*/app/*" user!=cmon_user user!="-" 
+    | rex field=uri "app/(?&lt;app&gt;[^/]+)/" 
+     | stats dc(app) as "Apps in Use"   ] 
+| stats max("Apps in Use") as "Apps in Use" dc(title) as "Enabled Apps"</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Daily Distinct Users</title>
+      <chart>
+        <search>
+          <query>index=_internal sourcetype=splunk_web_access method=GET status=200 uri_path="/*/app/*" file!="*.*"
+| bucket _time span=1d
+| stats dc(user) as "Distinct Users" by _time
+| timechart span=1d avg("Distinct Users") as "Distinct Users"</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">"avg(Distinct Users)"</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Search Scheduling Distribution</title>
+      <chart>
+        <search>
+          <query>| inputlookup shc_saved_searches_rest_kv_store_lookup
+| table title cron_schedule scheduled_times 
+| mvexpand scheduled_times 
+| rename scheduled_times as _time 
+| timechart span=1m count as "Searches Scheduled"</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+</form>

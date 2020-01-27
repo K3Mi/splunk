@@ -1,0 +1,57 @@
+<form theme="dark">
+  <label>Splunk - IDX - 02 - Core Sizing Calculator - Dashboard - v1</label>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="time" token="TimeRangePkr">
+      <label>Time Range</label>
+      <default>
+        <earliest>-1s</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Scheduled/Data Model Acceleration Searches Average Search Time (Seconds per 100GB per Indexer)</title>
+      <single>
+        <title>How fast the search would be if running on 100 GB volume data, it is the baseline and start point of the calculator. Use this option will not calculate based on common scenario but based on the real usage.</title>
+        <search>
+          <query>index=_internal sourcetype=splunkd search_group=dmc_customgroup_Indexers component=Metrics group=per_index_thruput 
+| eval gb=kb/1024/1024 
+| stats sum(gb) as gb_per_day, dc(host) as idx_num 
+| eval gb_per_day_per_indexer = round(gb_per_day/idx_num ,2)
+| table gb_per_day_per_indexer</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="unit">Seconds</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Scheduled/Data Model Acceleration Searches Average Search Time (Seconds per 100GB per Indexer)</title>
+      <single>
+        <title>How fast the search would be if running on 100 GB volume data, it is the baseline and start point of the calculator. Use this option will not calculate based on common scenario but based on the real usage.</title>
+        <search>
+          <query>index=_audit action=search search_group=dmc_customgroup_Indexers info=completed search_id=* search_id!="*rsa_*" 
+| search search_id IN ("SummaryDirector_*", "*_scheduler_*", "*_alert_*") 
+| stats avg(total_run_time) as scheduled_search_avg_run_time 
+| eval scheduled_search_avg_run_time=round(scheduled_search_avg_run_time,2)</query>
+          <earliest>$TimeRangePkr.earliest$</earliest>
+          <latest>$TimeRangePkr.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="unit">Seconds</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+</form>

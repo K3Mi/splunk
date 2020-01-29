@@ -1,5 +1,5 @@
 <form theme="dark">
-  <label>Splunk - SH - 02 - Audit Search Activity - Dashboard - v3</label>
+  <label>Splunk - SH - 02 - Audit Search Activity - Dashboard - v4</label>
   <search id="Splunk_Monitoring_Introspection_Search_Usage">
     <query>
 | tstats SUMMARIESONLY=TRUE ALLOW_OLD_SUMMARIES=FALSE 

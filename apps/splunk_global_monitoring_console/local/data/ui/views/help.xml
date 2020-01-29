@@ -10,7 +10,7 @@
   </search>
   <fieldset submitButton="false" autoRun="true">
     <input type="multiselect" token="Index" searchWhenChanged="true">
-      <label>Index</label>
+      <label>Index/Model/Job Inspector</label>
       <choice value="*">All</choice>
       <fieldForLabel>Index</fieldForLabel>
       <fieldForValue>Index</fieldForValue>
@@ -38,7 +38,7 @@
       <valuePrefix>"</valuePrefix>
     </input>
     <input type="dropdown" token="Sub_Component" searchWhenChanged="true">
-      <label>Sub_Component</label>
+      <label>Subcomponent</label>
       <choice value="*">All</choice>
       <fieldForLabel>Sub_Component</fieldForLabel>
       <fieldForValue>Sub_Component</fieldForValue>
@@ -49,7 +49,7 @@
       <initialValue>*</initialValue>
     </input>
     <input type="dropdown" token="Field_Name" searchWhenChanged="true">
-      <label>Field_Name</label>
+      <label>Field Name</label>
       <choice value="*">All</choice>
       <fieldForLabel>Field_Name</fieldForLabel>
       <fieldForValue>Field_Name</fieldForValue>
@@ -60,7 +60,7 @@
       <initialValue>*</initialValue>
     </input>
     <input type="dropdown" token="Field_Display_Name" searchWhenChanged="true">
-      <label>Field_Display_Name</label>
+      <label>Field Display Name</label>
       <choice value="*">All</choice>
       <fieldForLabel>Field_Display_Name</fieldForLabel>
       <fieldForValue>Field_Display_Name</fieldForValue>
@@ -71,7 +71,7 @@
       <initialValue>*</initialValue>
     </input>
     <input type="dropdown" token="Field_Description" searchWhenChanged="true">
-      <label>Field_Description</label>
+      <label>Field Description</label>
       <choice value="*">All</choice>
       <fieldForLabel>Field_Description</fieldForLabel>
       <fieldForValue>Field_Description</fieldForValue>
@@ -82,17 +82,17 @@
       <initialValue>*</initialValue>
     </input>
     <input type="text" searchWhenChanged="true" token="Field_Display_Name">
-      <label>Field_Display_Name</label>
+      <label>Field Display Name (Contains)</label>
       <default>*</default>
       <initialValue>*</initialValue>
     </input>
     <input type="text" searchWhenChanged="true" token="Field_Name">
-      <label>Field_Name</label>
+      <label>Field Name (Contains)</label>
       <default>*</default>
       <initialValue>*</initialValue>
     </input>
     <input type="text" searchWhenChanged="true" token="Field_Description">
-      <label>Field_Description</label>
+      <label>Field Description (Contains)</label>
       <default>*</default>
       <initialValue>*</initialValue>
     </input>

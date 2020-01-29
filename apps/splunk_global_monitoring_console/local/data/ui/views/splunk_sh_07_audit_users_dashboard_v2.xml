@@ -5,7 +5,7 @@
     <query>| inputlookup splunk_sh_index_audit_user_login_kv_store_lookup 
 | eval Days_Since_Latest_Login = round((now() - Latest_Login_Updated) / 86400 ) , Days_Since_Earliest_Login = round((now() - Earliest_Login_Updated) / 86400 ) 
 | eval Earliest_Login=strftime(Earliest_Login,"%m/%d/%Y %H:%M:%S") , Latest_Login=strftime(Latest_Login,"%m/%d/%Y %H:%M:%S") , Earliest_Login_Updated=strftime(Earliest_Login_Updated,"%m/%d/%Y %H:%M:%S"), Latest_Login_Updated=strftime(Latest_Login_Updated,"%m/%d/%Y %H:%M:%S") 
-| `get_identity(User)`
+| `get_identity_info(User)`
 | eval Email=lower(Email)
 | rex field=Contractor_Expiration "(?&lt;Month&gt;\d+)\/(?&lt;Day&gt;\d+)\/(?&lt;Year&gt;\d+)" 
 | eval Month = case( Month = "1", "01", Month = "2", "02", Month = "3", "03", Month = "4", "04", Month = "5", "05", Month = "6", "06", Month = "7", "07", Month = "8", "08", Month = "9", "09", true(), Month ) 

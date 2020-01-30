@@ -2,7 +2,7 @@ Index,Component,Sub_Component,Field_Name,Field_Display_Name,Field_Description
 _audit,audittrail,,_time,Time,The time that the search was started.
 _internal,scheduler,,_time,Time,The time that the search was started.
 _introspection,splunk_resource_usage,,_time,Time,The time that the search was started.
-_introspection,splunk_resource_usage,data.search_props,acceleration_id,Acceleration ID,Data Model or Reporting Acceleration Acceleration ID
+_introspection,splunk_resource_usage,data.search_props,acceleration_id,Acceleration ID,Acceleration ID
 CIM,,,access_count,,The number of times the data model summary has been accessed since it was created.
 CIM,,,access_time,,The timestamp of the most recent access of the data model summary.
 CIM,,,action_mode,,"Specifies whether the action was executed as an ad hoc action or from a saved search, based on whether a search_name exists."
@@ -11,10 +11,10 @@ CIM,,,action_status,,"The status of the action. For example, ""success"", ""fail
 _internal,scheduler,,alert_actions,Alert Actions,
 _audit,audittrail,,api_et,,"The earliest time of the API call, which is the earliest time for which events were requested."
 _audit,audittrail,,api_lt,,"The latest time of the API call, which is the latest time for which events were requested."
-CIM,,,app,,"The app name which contains the view.
-The application context in which the data model summary was accessed.
-The app context in which the scheduled search was run.
-The app ID of the app or add-on that owns the action."
+CIM,,,app,,The app name which contains the view.
+CIM,,,app,,The application context in which the data model summary was accessed.
+CIM,,,app,,The app context in which the scheduled search was run.
+CIM,,,app,,The app ID of the app or add-on that owns the action.
 _internal,scheduler,,app,App,App name
 _introspection,splunk_resource_usage,data.search_props,app,App,App name
 _introspection,splunk_resource_usage,,args,,Non-search process arguments.
@@ -190,8 +190,8 @@ For more information about predicates and predicate-based search optimization, s
 Use the Job Inspector to see the results of search normalization and optimization. See Analyze search optimizations.
 The search string, as interpreted by the parser. This includes reverse lookups from enrichment, tags, eventtypes, etc"
 Search job inspector,Search job properties,,numPreviews,,Number of previews that have been generated so far for this search job.
-CIM,,,datamodel,,The name of the data model accelerated.
-_audit,audittrail,,datamodel,Datamodel,Derived from savedsearch_name
+CIM,,,odel,,The name of the data model accelerated.
+_audit,audittrail,,odel,Datamodel,Derived from savedsearch_name
 Search job inspector,Search job properties,,optimizedSearch,,"The restructured syntax for the search that was run. The built-in optimizers analyze your search and restructure the search syntax, where possible, to improve search performance. The search that you ran is displayed under the search job property."
 CIM,,,orig_rid,,"The rid value of a source action result, automatically added to an event if it is the product of a previously executed action."
 CIM,,,orig_sid,,"The original sid value of a source action, automatically added to an event if it is the product of a previously executed action."
@@ -201,13 +201,13 @@ _introspection,splunk_resource_usage,data,pct_memory,Memory %,Percentage of phys
 Search job inspector,Search job properties,,performance,,This is another representation of the Execution costs.
 Search job inspector,Search job properties,,phase0,,
 Search job inspector,Search job properties,,phase1,,
-Search job inspector,Search job properties,,pid,,Process ID.
+Search job inspector,Search job properties,,pid,,
 _introspection,splunk_resource_usage,data,pid,PID,Process ID.
 _introspection,splunk_resource_usage,data,ppid,,Parent process ID. Not available for all processes.
-Search job inspector,Search job properties,,priority,,"lets you improve the the run priority of a deferred scheduled report. This means that it may run ahead of other reports, and may have a better chance of running on or near its scheduled run time."
+Search job inspector,Search job properties,,priority,,
 _internal,scheduler,,priority,Priority,"lets you improve the the run priority of a deferred scheduled report. This means that it may run ahead of other reports, and may have a better chance of running on or near its scheduled run time."
 _introspection,splunk_resource_usage,data,process,,Process name. The .exe suffix is stripped on Windows operating systems.
-Search job inspector,Search job properties,,provenance,,"One of the following search sources: cli, rest, ui:<App>:<View>"
+Search job inspector,Search job properties,,provenance,,
 _introspection,splunk_resource_usage,data.search_props,provenance,Provenance,"One of the following search sources: cli, rest, ui:<App>:<View>"
 _introspection,splunk_resource_usage,data,read_mb,Read MB,"Amount of data read (MB), excluding cache reads."
 _internal,scheduler,,reason,Reason,
@@ -217,7 +217,7 @@ Search job inspector,Search job properties,,reportSearch,,"If reporting commands
 The remainder of the search, run locally on the SH, sometimes called the ""reduce part"""
 Search job inspector,Search job properties,,request,,GET arguments that the search sends to splunkd.
 _audit,audittrail,,result_count,Result Count,"If the search is a transforming search, the count of results for the search."
-_internal,scheduler,,result_count,Result Count,"If the search is a transforming search, the count of results for the search."
+_internal,scheduler,,result_count,Result Count,
 Search job inspector,Search job properties,,resultCount,,"The total number of results returned by the search.  For generating commands such as | rest, this is the number of rows produced.  (result_count)"
 Search job inspector,Search job properties,,resultIsStreaming,,"Indicates if the final results of the search are available using streaming (for example, no transforming operations)."
 Search job inspector,Search job properties,,resultPreviewCount,,The number of result rows in the latest preview results.
@@ -227,7 +227,7 @@ _introspection,splunk_resource_usage,data.search_props,role,,Splunk Enterprise p
 _audit,audittrail,,roles,Roles,
 _internal,scheduler,,run_time,Total Run Time,
 Search job inspector,Search job properties,,runDuration,,Time in seconds that the search took to complete.
-Search job inspector,Search job properties,,runtime,,Time in seconds that the search took to complete.
+Search job inspector,Search job properties,,runtime,,
 Search job inspector,Search job properties,,sampleRatio,,
 Search job inspector,Search job properties,,sampleSeed,,
 _internal,scheduler,,savedsearch_id,Savedsearch ID,
@@ -238,7 +238,7 @@ _audit,audittrail,,scan_count,Scan Count,The number of events retrieved from a S
 _introspection,splunk_resource_usage,data,scan_count,Scan Count,Event scan count for running process. Available only in Linux systems. This property is offered experimentally and might be changed or removed in a future release.
 Search job inspector,Search job properties,,scanCount,,"The number of events that are scanned or read off disk.  The number of events found in the index based on keywords in the search
 For tstats searches, this is the number of events in the matching tsidx files.  (scan_count)"
-_internal,scheduler,,scheduled_time,Scheduled Time,Scheduled Time
+_internal,scheduler,,scheduled_time,Scheduled Time,
 CIM,,,search,,The search string.
 Search job inspector,Search job properties,,search,,The search string.
 _audit,audittrail,,search,Search,The search string.
@@ -266,22 +266,26 @@ Search job inspector,Search job properties,,searchTotalEliminatedBucketsCount,,H
 CIM,,,sid,,The search id.
 CIM,,,sid,,"The search id, automatically assigned by splunkd."
 Search job inspector,Search job properties,,sid,,The search ID number.
-_internal,scheduler,,sid,Search ID,Search ID (SID).
+_internal,scheduler,,sid,Search ID,
 _introspection,splunk_resource_usage,data.search_props,sid,Search ID,Search ID (SID).
 CIM,,,signature,,The logging string associated with alert action introspection events.
 CIM,,,size,,"The amount of storage space the data model's acceleration summary takes up, in bytes."
 _internal,scheduler,,skipped_count,Skipped Count,
 Search job inspector,Search job properties,,slices examined,,(total_slices)
 Search job inspector,Search job properties,,slices decompressed,,How many index slices (usually 128kB) were decompressed. (decompressed_slices)
-CIM,,,source,,The source associated with the search or scheduled search or the web service error occurred.
-CIM,,,sourcetype,,The source types included in the search or scheduled search or the web service error occurred.
+CIM,,,source,,The source associated with the search.
+CIM,,,source,,The source associated with the scheduled search.
+CIM,,,source,,The source where the web service error occurred.
+CIM,,,sourcetype,,The source types included in the search.
+CIM,,,sourcetype,,The source type associated with the scheduled search.
+CIM,,,sourcetype,,The source type associated with the web service error.
 CIM,,,spent,,The amount of time spent loading the view (in milliseconds).
 CIM,,,splunk_server,,The Splunk Server on which the scheduled search runs.
 _audit,audittrail,,splunk_server,,The host name of the machine where the search was run.
 Search job inspector,Execution costs of search commands,,startup.configuration,,
 Search job inspector,Execution costs of dispatched searches,,startup.handoff,,"The time elapsed between the forking of a separate search process and the beginning of useful work of the forked search processes. In other words it is the approximate time it takes to build the search apparatus. This is cumulative across all involved peers. If this takes a long time, it could be indicative of I/O issues with .conf files or the dispatch directory."
 CIM,,,status,,The status of the scheduled search.
-_internal,scheduler,,status,info,The status of the scheduled search.
+_internal,scheduler,,status,info,
 _introspection,splunk_resource_usage,data,status,,"Status from the OS scheduler. Can be R (runnable or running), W (waiting), stopped, Z (zombie), or O (other). W includes voluntary sleep or blocking on I/O. O means status is knowable but does not fit into one of those categories. Not available on Windows."
 Search job inspector,Search job properties,,statusBuckets,,Maximum number of timeline buckets.
 CIM,,,summary_id,,The unique id of the data model acceleration summary.
@@ -292,10 +296,10 @@ _audit,audittrail,,total_slices,Total Slices,
 Search job inspector,Search job properties,,ttl,,"The time to live, or time before the search job expires after it completes."
 _introspection,splunk_resource_usage,data.search_props,type,Search Type,One of the following search types. ad-hoc datamodel acceleration other report acceleration scheduled summary indexing
 CIM,,,uri,,The uniform resource identifier of the view activity.
-CIM,,,user,,"The username of the user who accessed the view.
-The name of the user who ran the search.
-The user who scheduled the search.
-The user who triggered an ad hoc alert. Not relevant for actions triggered by searches."
+CIM,,,user,,The username of the user who accessed the view.
+CIM,,,user,,The name of the user who ran the search.
+CIM,,,user,,The user who scheduled the search.
+CIM,,,user,,The user who triggered an ad hoc alert. Not relevant for actions triggered by searches.
 _internal,scheduler,,user,User,
 _introspection,splunk_resource_usage,data.search_props,user,User,Splunk username who initiated the search
 CIM,,,user_bunit,,The business unit of the user who ran the search.
@@ -305,4 +309,4 @@ CIM,,,view,,The name of the view.
 _internal,scheduler,,window_time,Window Time,specifies how long the report scheduler can delay a report from running and allow higher-priority reports to run ahead ahead of it.
 Search job inspector,Search job properties,,workload_pool,,
 _introspection,splunk_resource_usage,data,written_mb,Written MB,"Amount of data written (MB), excluding canceled writes."
-Search job inspector,Execution costs of search commands,,command.search.*,,"After the Splunk software identifies the events that contain the indexed fields matching your search, the events are analyzed to identify which events match the other search criteria. These are concurrent operations, not consecutive."
+Search job inspector,Execution costs of search commands,,,,"After the Splunk software identifies the events that contain the indexed fields matching your search, the events are analyzed to identify which events match the other search criteria. These are concurrent operations, not consecutive."

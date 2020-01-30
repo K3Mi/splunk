@@ -1,0 +1,2 @@
+serverName,numberOfPhyscialCores,numberOfVirtualCores,physicalMemoryGB
+"ip-10-0-1-70.us-west-2.compute.internal",4,4,16

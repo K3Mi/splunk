@@ -1,0 +1,140 @@
+<form theme="dark">
+  <label>Splunk - SH - 12 - Audit API Search Activity - Dashboard - v1</label>
+  <search id="baseSearch">
+    <query>index=_audit sourcetype=audittrail format="*" user!=x000319 
+| eval apiStartTime_epoch=strptime(apiStartTime,"%a %b %d %H:%M:%S %Y"), apiEndTime_epoch=strptime(apiEndTime,"%a %b %d %H:%M:%S %Y") 
+| eval Time_Range_hour = round((apiEndTime_epoch - apiStartTime_epoch) / 60 / 60, 2), Time_Range_days = round((apiEndTime_epoch - apiStartTime_epoch) / 60 / 60 / 24, 2) 
+| rex field=search "savedsearch\s(?&lt;savedsearch&gt;.*?)\s" | eval user=upper(user)
+| rex field=search mode=sed "s/\| export add_timestamp=f add_offset=t format=csv segmentation=raw//g"
+| fields timestamp user apiStartTime apiEndTime Time_Range_hour Time_Range_days savedsearch savedsearch_name search
+| search search user=$user$ savedsearch="$savedsearch$"
+      </query>
+    <earliest>$TimeRangePkr.earliest$</earliest>
+    <latest>$TimeRangePkr.latest$</latest>
+  </search>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="TimeRangePkr" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="user" searchWhenChanged="true">
+      <label>User</label>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <fieldForLabel>user</fieldForLabel>
+      <fieldForValue>user</fieldForValue>
+      <search base="baseSearch">
+        <query>stats count by user|fields user</query>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="savedsearch" searchWhenChanged="true">
+      <label>Saved Search</label>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <fieldForLabel>savedsearch</fieldForLabel>
+      <fieldForValue>savedsearch</fieldForValue>
+      <search base="baseSearch">
+        <query>stats count by savedsearch
+| fields savedsearch</query>
+      </search>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Total Number of API Searches</title>
+      <single>
+        <search base="baseSearch">
+          <query>search user=$user$ | stats count</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeValues">[100,200,400,800]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="unit">API Searches</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Count By User</title>
+      <chart>
+        <search base="baseSearch">
+          <query>stats count by user</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Count By Saved Searches</title>
+      <single>
+        <search base="baseSearch">
+          <query>stats count(savedsearch) as savedsearch</query>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Count By Search</title>
+      <table>
+        <search base="baseSearch">
+          <query>stats count by savedsearch</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <format type="color" field="savedsearch">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#D93F3C" midColor="#F7BC38" minColor="#6DB7C6"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>API Searches</title>
+      <table>
+        <search base="baseSearch">
+          <query>| eval user=upper(user) 
+| lookup CCB_Splunk_SH_Users_Lookup_v1 user OUTPUT name as Name email as Email roles as Roles 
+| table timestamp user Name apiStartTime apiEndTime Time_Range_hour Time_Range_days savedsearch savedsearch_name search</query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <format type="color" field="user">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="savedsearch">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="search">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="savedsearch_name">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

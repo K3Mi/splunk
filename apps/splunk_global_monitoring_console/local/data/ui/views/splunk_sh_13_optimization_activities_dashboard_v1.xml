@@ -1,0 +1,118 @@
+<dashboard theme="dark">
+  <label>Splunk - SH - 13 - Optimization Activities - Dashboard - v1</label>
+  <row>
+    <panel>
+      <title>Dashboard Adoption by App &amp; Dashboard including searches performed</title>
+      <table>
+        <search>
+          <query>| rest splunk_server_group=dmc_group_search_head /servicesNS/-/-/data/ui/views 
+| rename eai:data as data eai:appName as app 
+| where isDashboard=1 AND disabled=0 AND isVisible=1 AND rootNode="dashboard" 
+| rex field=data "&lt;query&gt;\n*(?&lt;query&gt;[^&lt;]+)" 
+| stats values(query) as query count by app title label 
+| join type=outer app title 
+    [ search index=_internal `Search_Head_Cluster` sourcetype=splunk_web_access method=GET app 
+    | rex "GET /[^/]+/app/(?&lt;app&gt;[^/ ?]+)/(?&lt;title&gt;[^\/\?\s]+)" 
+    | stats dc(user) AS dc_users values(user) as users by app, title ] 
+| table  app label users dc_users query  
+| where dc_users &gt; 1
+| sort 0 - dc_users</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">25</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Report on Dashboard panel refresh rate</title>
+        <search>
+          <query>| rest splunk_server_group=dmc_group_search_head /servicesNS/-/-/data/ui/views 
+| rename eai:data as data eai:appName as app 
+| where isDashboard=1 AND disabled=0 AND isVisible=1 AND rootNode="dashboard" 
+| rex field=data "&lt;query&gt;\n*(?&lt;query&gt;[^&lt;]+)"| rex field=data max_match=0 "&lt;refresh&gt;\n*(?&lt;refresh&gt;[^&lt;]+)"
+| table title label refresh</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>index="_introspection" host=icp* sourcetype=splunk_resource_usage data.search_props.sid::* "data.search_props.user"!="splunk-system-user" "data.search_props.user"!="admin" 
+| eval mem_user='data.mem_used'
+| eval app='data.search_props.app'
+| eval elapsed='data.elapsed'
+| eval label='data.search_props.label'
+| eval type='data.search_props.type'
+| eval mode='data.search_props.mode'
+| eval user='data.search_props.user'
+| eval cpuperc='data.pct_cpu'
+| eval read_mb='data.read_mb'
+| eval provenance='data.search_props.provenance'
+| eval label=coalesce(label, provenance)
+| eval search_head= if(isnull('data.search_props.search_head'),"N/A",'data.search_props.search_head') 
+| stats max(elapsed) as runtime max(mem_used) as mem_used earliest(_time) as Started, sum(cpuperc) AS totalCPU, max(read_mb) AS read_mb, avg(cpuperc) AS avgCPU by type, mode, app, user, label, host, data.pid
+| stats sum(avgCPU) AS totalAVGCPU, sum(mem_used) AS totalMemUsed, sum(runtime) AS totalRuntime, sum(read_mb) AS totalReadMB, sum(totalCPU) AS TotalCPU by Started, type, "mode", app, user, label, host 
+| eval totalMemUsed = round(totalMemUsed, 2)
+| eval Started=strftime(Started,"%+") | eval duration = tostring(totalRuntime, "duration")
+| eval avgCPU=round(totalAVGCPU)
+| eval totalCPU=tostring(totalCPU,"commas"), avgCPU=tostring(avgCPU,"commas")
+| sort - totalAVGCPU, totalMemUsed
+| fields - totalAVGCPU - totalMemUsed - totalReadMB - duration</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Report on Data Model Acceleration Details</title>
+        <search>
+          <query>| rest /services/datamodel/model splunk_server_group=dmc_group_search_head
+| fields title acceleration 
+| rex field=acceleration "enabled\":(?&lt;enabled&gt;.*?)," 
+| rex field=acceleration "cron_schedule\":\"(?&lt;cron_schedule&gt;.*?)\"" 
+| rex field=acceleration "max_time\":(?&lt;max_time&gt;\d+)" 
+| rex field=acceleration "manual_rebuilds\":(?&lt;manual_rebuilds&gt;.*?)," 
+| rex field=acceleration "max_concurrent\":(?&lt;max_concurrent&gt;\d+)" 
+| rex field=acceleration "schedule_priority\":\"(?&lt;schedule_priority&gt;.*?)\"" 
+| rex field=acceleration "earliest_time\":\"(?&lt;earliest_time&gt;.*?)\"" 
+| rex field=acceleration "backfill_time\":(?&lt;backfill_time&gt;\d+)" 
+| rex field=acceleration "allow_skew\":\"(?&lt;allow_skew&gt;.*?)\"" 
+| rex field=acceleration "allow_old_summaries\":(?&lt;allow_old_summaries&gt;.*?)," 
+| fields title enabled cron_schedule max_time manual_rebuilds max_concurrent schedule_priority earliest_time backfill_time allow_skew allow_old_summaries 
+| stats last(*) as * by title 
+| eval Summary_Range = max_time / 60 / 60 
+| rename title as Data_Model, enabled as Accelerate 
+| table Data_Model Accelerate Summary_Range cron_schedule max_time manual_rebuilds max_concurrent schedule_priority earliest_time backfill_time allow_skew allow_old_summaries</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,202 @@
+<form theme="dark">
+  <label>Splunk - SH - 16 - Audit  User Concurrency - Dashboard - v1</label>
+  <search id="baseSearch">
+    <query>index=_internal sourcetype=splunkd component=DispatchManager log_level=WARN username=* 
+| eval username=upper(username) 
+| stats values(reason) as Reason count by username 
+| where count &gt; 2 
+| fields username Reason count
+| join username 
+    [| rest /servicesNS/-/-/authentication/users splunk_server=iaasn00041951 
+    | eval username=upper(title) 
+    | stats count by username realname roles type | rename roles as role
+    | join role 
+        [| rest /servicesNS/-/-/authorization/roles splunk_server=iaasn00041951 
+        | dedup title 
+        | eval imported_roles=if(isnull(imported_roles), title, imported_roles)
+       | rename title as role 
+        | fields role imported_roles cumulativeSrchJobsQuota srchDiskQuota srchJobsQuota rtSrchJobsQuota cumulativeRTSrchJobsQuota imported_rtSrchJobsQuota imported_srchDiskQuota imported_srchJobsQuota 
+        | stats values(*) as * by role] 
+    | fields username realname role imported_roles type srchDiskQuota srchJobsQuota rtSrchJobsQuota cumulativeSrchJobsQuota cumulativeRTSrchJobsQuota imported_rtSrchJobsQuota imported_srchDiskQuota imported_srchJobsQuota] 
+| fields username realname role imported_roles type srchDiskQuota srchJobsQuota rtSrchJobsQuota cumulativeSrchJobsQuota cumulativeRTSrchJobsQuota imported_rtSrchJobsQuota imported_srchDiskQuota imported_srchJobsQuota Reason count</query>
+    <earliest>$TimeRangePkr.earliest$</earliest>
+    <latest>$TimeRangePkr.latest$</latest>
+  </search>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="TimeRangePkr" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="username" searchWhenChanged="true">
+      <label>Username</label>
+      <choice value="*">All</choice>
+      <fieldForLabel>username</fieldForLabel>
+      <fieldForValue>username</fieldForValue>
+      <search base="baseSearch">
+        <query>search "Reason"="$Reason$" AND role="$role$" 
+| stats count by username 
+| sort username 
+| fields username</query>
+      </search>
+      <default>*</default>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="dropdown" token="Reason" searchWhenChanged="true">
+      <label>Reason</label>
+      <choice value="*">All</choice>
+      <initialValue>*</initialValue>
+      <fieldForLabel>Reason</fieldForLabel>
+      <fieldForValue>Reason</fieldForValue>
+      <search base="baseSearch">
+        <query>search username=$username$  AND role="$role$" 
+| stats count by "Reason" 
+| sort "Reason" 
+| fields "Reason"</query>
+      </search>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="role" searchWhenChanged="true">
+      <label>Role Name</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>role</fieldForLabel>
+      <fieldForValue>role</fieldForValue>
+      <search base="baseSearch">
+        <query>search username=$username$ AND "Reason"="$Reason$"
+| stats count by role 
+| fields role</query>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Users Affected</title>
+      <single>
+        <search base="baseSearch">
+          <query>search username=$username$ AND "Reason"="$Reason$" AND role="$role$"|stats count|</query>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="unit">Users</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Count By Reason</title>
+      <table>
+        <search base="baseSearch">
+          <query>search username=$username$ AND "Reason"="$Reason$" AND role="$role$" 
+| stats count by Reason|sort - count</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <format type="color" field="Reason">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#D6563C" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Count By Role</title>
+      <chart>
+        <search base="baseSearch">
+          <query>search username=$username$ AND "Reason"="$Reason$" AND role="$role$" 
+| stats count by role</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Users that hit concurrency levels, the reason for it and information about their Splunk Role Quotas</title>
+      <table>
+        <title>srchDiskQuota =  The maximum amount of disk space, in megabytes, that can be used by search  jobs for a specific user with this role srchJobsQuota = The maximum number of concurrently running historical searches that a user   with this role can have.</title>
+        <search base="baseSearch">
+          <query>| eval username=upper(username) 
+| lookup sid_info_lookup Standard_ID AS username OUTPUT Full_Name Worker_Status Entry_Type Cost_Center Termination_Date Contractor_Expiration Department_Description Direct_Manager_SID Manager_Name LOB Job_Code_Description Email HR_City HR_State HR_Country_Code 
+| eval Email=lower(Email) 
+| table username Full_Name role imported_roles srchDiskQuota imported_srchDiskQuota srchJobsQuota imported_srchJobsQuota cumulativeSrchJobsQuota count Reason 
+| sort - count 
+| search username=$username$ AND "Reason"="$Reason$" AND role="$role$"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="wrap">false</option>
+        <format type="color" field="count">
+          <colorPalette type="list">[#65A637,#6DB7C6,#F7BC38,#F58F39,#D93F3C]</colorPalette>
+          <scale type="threshold">100,500,1000,5000</scale>
+        </format>
+        <format type="color" field="username">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Reason">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="role">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="srchDiskQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="srchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="rtSrchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="cumulativeSrchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="cumulativeRTSrchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="number" field="count">
+          <option name="precision">0</option>
+        </format>
+        <format type="color" field="imported_rtSrchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="imported_srchDiskQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="imported_srchJobsQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Total_srchDiskQuota">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="imported_roles">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>

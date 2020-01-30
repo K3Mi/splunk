@@ -1,0 +1,33 @@
+<dashboard theme="dark">
+  <label>Splunk - IDX - 06 - Global License Usage - Dashboard - v1</label>
+  <row>
+    <panel>
+      <title>License Usage - Previous 7 Days - From metrics.log</title>
+      <chart>
+        <search ref="License Usage - Previous 30 Days - From metrics.log"></search>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.maximumNumber">25</option>
+        <option name="charting.axisY.scale">log</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">linear</option>
+        <option name="charting.chart.overlayFields">Total_License_Usage</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">600</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>DO NOT USE THIS CHART UNTIL WE STABILIZE THE LM REPORTING ROLLOVER SUMMARY!!!</title>
+      <chart>
+        <title>License Usage - Previous 30 Days</title>
+        <search ref="License Usage - Previous 30 Days"></search>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">400</option>
+      </chart>
+    </panel>
+  </row>
+</dashboard>

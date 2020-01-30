@@ -1,6 +1,0 @@
-
-        <dashboard version="2" theme="dark">
-            <label>Readme</label>
-            <description></description>
-            <definition>{&quot;layout&quot;:{&quot;type&quot;:&quot;absolute&quot;,&quot;options&quot;:{&quot;display&quot;:&quot;auto-scale&quot;,&quot;backgroundColor&quot;:&quot;#000000&quot;},&quot;structure&quot;:[{&quot;item&quot;:&quot;viz_JE3pjc60&quot;,&quot;type&quot;:&quot;block&quot;,&quot;position&quot;:{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:475,&quot;h&quot;:350}}]},&quot;description&quot;:&quot;&quot;,&quot;title&quot;:&quot;Readme&quot;,&quot;visualizations&quot;:{&quot;viz_JE3pjc60&quot;:{&quot;type&quot;:&quot;viz.text&quot;,&quot;options&quot;:{&quot;content&quot;:&quot;Macros:\n| `cron_schedule(cron_schedule)`\n\n| `get_lookup_reference(search)`\n\n| `get_splunk_env(host)`\n\n| `get_identity_info(user)`\n\n| `get_saved_searches_info(savedsearch_name)`\n\n| `gmc_convert_runtime(&#39;total_run_time&#39;)` &quot;,&quot;fontSize&quot;:20}}}}</definition>
-        </dashboard>

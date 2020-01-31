@@ -1,3 +1,0 @@
-Identity,Name,Title,Phone,Email,Type,Status,City,State,Country,Region,Location_Code,Floor_Number,startDate,endDate,Department,LOB,Cost_Center,Manager,Contractor_Expiration
-akhamis,Amir Khamis,Staff Professional Services Consultant,123-456-7899,akhamis@splunk.com,Employee,Active,Grand Rapids,MI,USA,Mid-West,GRR,,1/1/2000,,Professional Services,Customer Success,123456,Charles,
-jsmith,John Smith,Professional Services Consultant,123-456-7899,jsmith@splunk.com,Contractor,Active,San Francisco,CA,USA,West,SFO,7,1/1/2000,,,,,,

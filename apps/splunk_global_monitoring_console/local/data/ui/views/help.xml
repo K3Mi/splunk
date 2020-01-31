@@ -60,7 +60,7 @@
       <initialValue>*</initialValue>
     </input>
     <input type="dropdown" token="Field_Display_Name" searchWhenChanged="true">
-      <label>Field Display Name</label>
+      <label>Field Display Name (Dashboards)</label>
       <choice value="*">All</choice>
       <fieldForLabel>Field_Display_Name</fieldForLabel>
       <fieldForValue>Field_Display_Name</fieldForValue>
@@ -139,6 +139,8 @@
   <row>
     <panel>
       <table>
+        <title>Search Job Inspector help: https://docs.splunk.com/Documentation/Splunk/latest/Search/ViewsearchjobpropertieswiththeJobInspector.
+        Note: When troubleshooting search performance, it's important to understand the difference between the scanCount and resultCount costs. For dense searches, the scanCount and resultCount are similar (scanCount = resultCount); and for sparse searches, the scanCount is much greater than the result count (scanCount &gt;&gt; resultCount). Search performance should not so much be measured using the resultCount/time rate but scanCount/time instead. Typically, the scanCount/second event rate should hover between 10k and 20k events per second for performance to be deemed good.</title>
         <search base="Help">
           <query>| table Index Component Sub_Component Field_Name Field_Display_Name Field_Description 
 | sort Index Component Sub_Component Field_Name</query>

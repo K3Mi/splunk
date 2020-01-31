@@ -1,5 +1,5 @@
 <form script="tabs.js" stylesheet="tabs.css" theme="dark">
-  <label>Splunk - SH - 03 - Knowledge Objects Analysis - Dashboard - v2</label>
+  <label>Splunk - SH - 03 - Knowledge Objects Analysis - Dashboard - v3</label>
   <search id="getDashboardListFromLookup">
     <query>
 | inputlookup splunk_sh_rest_data_ui_dashboards_lookup 

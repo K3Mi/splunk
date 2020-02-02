@@ -31,6 +31,7 @@
   
     WHERE nodename=Search_Activity.Introspection_Search_Usage
     index=_introspection
+    AND Search_Activity.Introspection_Search_Usage.app3 != "splunk_global_monitoring_console"
     AND Search_Activity.Introspection_Search_Usage.app3 = "$app$"
     AND Search_Activity.Introspection_Search_Usage.search_type3 = "$search_type$"
     AND Search_Activity.Introspection_Search_Usage.user3 = "$user$"
@@ -180,6 +181,7 @@
    
     WHERE nodename=Search_Activity.Internal_Scheduler
     index=_internal
+    AND Search_Activity.Internal_Scheduler.app2 != "splunk_global_monitoring_console"
     AND Search_Activity.Internal_Scheduler.savedsearch_name2 = "$savedsearch_name$"
     AND Search_Activity.Internal_Scheduler.app2 = "$app$"
     AND Search_Activity.Internal_Scheduler.search_type2 = "$search_type$" 
@@ -279,7 +281,7 @@
       <input type="time" token="TimeRangePkr1" searchWhenChanged="true">
         <label>Introspection Time Range</label>
         <default>
-          <earliest>-60m@m</earliest>
+          <earliest>-24h@h</earliest>
           <latest>now</latest>
         </default>
       </input>
@@ -673,7 +675,7 @@
       <input type="time" token="TimeRangePkr2" searchWhenChanged="true">
         <label>Audit Time Range</label>
         <default>
-          <earliest>-15m</earliest>
+          <earliest>-24h@h</earliest>
           <latest>now</latest>
         </default>
       </input>
@@ -1049,7 +1051,7 @@
       <input type="time" token="TimeRangePkr3" searchWhenChanged="true">
         <label>Internal Time Range</label>
         <default>
-          <earliest>-15m</earliest>
+          <earliest>-24h@h</earliest>
           <latest>now</latest>
         </default>
       </input>

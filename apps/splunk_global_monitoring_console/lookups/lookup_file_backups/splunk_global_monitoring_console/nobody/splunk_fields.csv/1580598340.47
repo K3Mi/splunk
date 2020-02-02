@@ -300,7 +300,8 @@ Search job inspector,Search job properties,,isTimeCursored,,Specifies if the cur
 Search job inspector,Search job properties,,isZombie,,"Indicates if the process running the search is dead, but with the search not finished."
 Search job inspector,Search job properties,,keywords,,All positive keywords used by this search. A positive keyword is a keyword that is not in a NOT clause.
 Search job inspector,Execution costs of search commands,command.search,kv,,"tells how long it took to apply field extractions to the events.command.
-Performing KV extractions on the data. Cumulative across REPORT, EXTRACT,KV_MODE, AUTO_KV_JSON, etc."
+Performing KV extractions on the data. Cumulative across REPORT, EXTRACT,
+KV_MODE, AUTO_KV_JSON, etc."
 Search job inspector,Search job properties,,label,,Custom name created for this search.
 Search job inspector,Search job properties,,latestTime,,The latest time a search job is configured to start. Can be used to indicate progress. See description for doneProgress.
 Search job inspector,Execution costs of dispatched searches,dispatch,localSearch,,
@@ -392,4 +393,3 @@ Search job inspector,Search job properties,,ttl,,"The time to live, or time befo
 Search job inspector,Execution costs of search commands,command.search,typer,,tells how long it took to assign event types to events. Finding eventtypes.
 Search job inspector,Search job properties,,workload_pool,,
 Search job inspector,Execution costs of dispatched searches,dispatch,writeStatus,,The time spent periodically updating status.csv and info.csv in the job's dispatch directory.
-_internal,splunkd_remote_searches,,elapsedTime,,"The amount of time the indexer spent working on this search. Includes time spent waiting for search head to receive data, so not exactly the time spent working, but it's the closest thing we have."

@@ -1,17 +1,11 @@
 Index,Component,Sub_Component,Field_Name,Field_Display_Name,Field_Description
 _audit,audittrail,,_time,Time,The time that the search was started.
-_audit,audittrail,,api_et,,"The earliest time of the API call, which is the earliest time for which events were requested.
-
-Time range passed down from API args, before any search-based time modifiers"
-_audit,audittrail,,api_lt,,"The latest time of the API call, which is the latest time for which events were requested.
-
-Time range passed down from API args, before any search-based time modifiers"
+_audit,audittrail,,api_et,,"The earliest time of the API call, which is the earliest time for which events were requested."
+_audit,audittrail,,api_lt,,"The latest time of the API call, which is the latest time for which events were requested."
 _audit,audittrail,,available_count,Available Count,The number of events that are available for export.
-_audit,audittrail,,considered_events,Considered Events,Total events in considered buckets (searched - eliminated).
+_audit,audittrail,,considered_events,Considered Events,
 _audit,audittrail,,datamodel,Datamodel,Derived from savedsearch_name
-_audit,audittrail,,decompressed_slices,Decompressed Slices,"How many slices were decompressed to fetch the raw events from (i.e., after searching in tsidx, we know exactly which slices to decompress to get the raw events). The larger the difference between this field and total_slices, the sparser the search.
-
-Slices: Collection of compressed (gzipped) blocks, called slices,
+_audit,audittrail,,decompressed_slices,Decompressed Slices,"Collection of compressed (gzipped) blocks, called slices,
 Concatenated together in a rawdata/journal.gz
 Think “cat chunkA.gzchunkB.gz...chunkN.gz> journal.gz”).
 Slices contain the actual raw events.
@@ -20,48 +14,26 @@ Locations offsets are pointed to by the values array pointers in tsidx.
 Such organization allows us to zoom in to the right slice
 reduces the amount of decompression time & volume compared to having a single, massive rawdatafile."
 _audit,audittrail,,drop_count,,"In real-time searches only, the number of possible events dropped due to queue size."
-_audit,audittrail,,eliminated_buckets,Eliminated Buckets,"Buckets eliminated by bloom filter (we never looked at tsidx index). The more buckets eliminated, the sparser the search. See http://docs.splunk.com/Documentation/Splunk/latest/Search/Aboutsearch for more information about types of searches.
-
-How many of those that were eliminated (usually by bloom filters)."
-_audit,audittrail,,event_count,Event Count,"Number of events that were returned by the ""search"" command based on matched search terms.
-This is the number of events that matched the search criteria
-If the search retrieved or generated events, the count of events returned with the search."
-_audit,audittrail,,exec_time,Dispatch Time,"The execution time of the search in integer quantity of seconds into the Unix epoch.
-Timestamp of start of search"
+_audit,audittrail,,eliminated_buckets,eliminated_buckets,
+_audit,audittrail,,event_count,Event Count,"If the search retrieved or generated events, the count of events returned with the search."
+_audit,audittrail,,exec_time,Dispatch Time,The execution time of the search in integer quantity of seconds into the Unix epoch.
 _audit,audittrail,,info,Info,The status of the search.
 _audit,audittrail,,is_realtime,IS Realtime,Indicates whether the search was real-time (1) or historical (0).
 _audit,audittrail,,result_count,Result Count,"If the search is a transforming search, the count of results for the search."
 _audit,audittrail,,roles,Roles,
 _audit,audittrail,,savedsearch_name,Savedsearch Name,The name of the saved search.
-_audit,audittrail,,scan_count,Scan Count,"Number of events scanned (decompressed and evaluated against search terms). Measured before the first filter in the search pipeline. The only events filtered from here are filtered by index. Under certain circumstances, this can be > event_count.
-
-The number of events retrieved from a Splunk index at a low level."
+_audit,audittrail,,scan_count,Scan Count,The number of events retrieved from a Splunk index at a low level.
 _audit,audittrail,,search,Search,The search string.
-_audit,audittrail,,search_et,Search ET,"The earliest time set for the search to run.
-Time range as modified by initial search operator."
-_audit,audittrail,,search_id,Search ID,"The search job ID.
-The prefix is meaningful - it can distinguish ad hoc from scheduled searches, etc
-remote_<SH> --> Remote Marker
-rt_ --> Real Time Marker
-subsearch_ --> Subsearch Marker
-rsa_ --> Replica Marker
-md_ --> Metadata Marker
-ta_ --> Typeahead Marker"
-_audit,audittrail,,search_lt,Search LT,"The latest time set for the search to run.
-Time range as modified by initial search operator."
+_audit,audittrail,,search_et,Search ET,The earliest time set for the search to run.
+_audit,audittrail,,search_id,Search ID,The search job ID.
+_audit,audittrail,,search_lt,Search LT,The latest time set for the search to run.
 _audit,audittrail,,search_startup_time,Search Startup Time,"Startup time indicates that parsing is complete and the distributed search infrastructure is set up. At startup, Splunk software is ready to wait for responses from indexers."
 _audit,audittrail,,Search_StartUp_Time_Average_Time(ms),,Average time for preprocessing before search startup. Counted from time search state is set to RUNNING.
 _audit,audittrail,,Search_StartUp_Time_Max_Time(ms),,Maximum time for preprocessing before search startup. Counted from time search state is set to RUNNING.
-_audit,audittrail,,searched_buckets,Searched Buckets,"Buckets in the time range.
-
-How many indexing buckets were searched."
+_audit,audittrail,,searched_buckets,Searched Buckets,
 _audit,audittrail,,splunk_server,,The host name of the machine where the search was run.
-_audit,audittrail,,total_run_time,Total Run Time,"Search run time in seconds.
-
-The total time it took to run the search in seconds."
-_audit,audittrail,,total_slices,Total Slices,"How many slices in all considered buckets Journal.gz that might need to be decompressed.
-
-Total slices examined during the search"
+_audit,audittrail,,total_run_time,Total Run Time,The total time it took to run the search in seconds.
+_audit,audittrail,,total_slices,Total Slices,Total slices examined during the search
 _internal,scheduler,,_time,Time,The time that the search was started.
 _internal,scheduler,,alert_actions,Alert Actions,"The Alert or Trigger Action performed when the Trigger condition is meet.  Examples:
 email,logevent,lookup,outputtelemetry,script
@@ -120,12 +92,7 @@ The maximum number of concurrent running jobs for this search on this cluster ha
 The maximum number of concurrent running jobs for this search on this instance has been reached
 The maximum number of concurrent scheduled searches has been reached
 The maximum number of concurrent searches has been reached for all roles"
-_internal,scheduler,,result_count,Result Count,"Number of events returned on search head. For reporting searches, this can be different from event_count. For example:
-index=_internal | stats count
-will have an event_count equal to the number of events matched but a result_count of 1, given that the result of this search is only one row.
-
-The number of resulting rows.
-If the search is a transforming search, the count of results for the search."
+_internal,scheduler,,result_count,Result Count,"If the search is a transforming search, the count of results for the search."
 _internal,scheduler,,run_time,Total Run Time,The total time it took to run the search in seconds.
 _internal,scheduler,,savedsearch_id,Savedsearch ID,The Splunk ID of the saved search.
 _internal,scheduler,,savedsearch_name,Savedsearch Name,The name of the saved search.
@@ -163,9 +130,7 @@ _introspection,splunk_resource_usage,data,process,,Process name. The .exe suffix
 _introspection,splunk_resource_usage,data.search_props,provenance,Provenance,"One of the following search sources: cli, rest, ui:<App>:<View>"
 _introspection,splunk_resource_usage,data,read_mb,Read MB,"Amount of data read (MB), excluding cache reads."
 _introspection,splunk_resource_usage,data.search_props,role,,Splunk Enterprise platform role. Either head or peer.
-_introspection,splunk_resource_usage,data,scan_count,Scan Count,"Event scan count for running process. Available only in Linux systems. This property is offered experimentally and might be changed or removed in a future release.
-
-Number of events scanned (decompressed and evaluated against search terms). Measured before the first filter in the search pipeline. The only events filtered from here are filtered by index."
+_introspection,splunk_resource_usage,data,scan_count,Scan Count,Event scan count for running process. Available only in Linux systems. This property is offered experimentally and might be changed or removed in a future release.
 _introspection,splunk_resource_usage,data.search_props,search_head,Search Head,Dispatching search head for processes running saved searches.
 _introspection,splunk_resource_usage,data.search_props,sid,Search ID,Search ID (SID).
 _introspection,splunk_resource_usage,data,status,,"Status from the OS scheduler. Can be R (runnable or running), W (waiting), stopped, Z (zombie), or O (other). W includes voluntary sleep or blocking on I/O. O means status is knowable but does not fit into one of those categories. Not available on Windows."
@@ -300,7 +265,8 @@ Search job inspector,Search job properties,,isTimeCursored,,Specifies if the cur
 Search job inspector,Search job properties,,isZombie,,"Indicates if the process running the search is dead, but with the search not finished."
 Search job inspector,Search job properties,,keywords,,All positive keywords used by this search. A positive keyword is a keyword that is not in a NOT clause.
 Search job inspector,Execution costs of search commands,command.search,kv,,"tells how long it took to apply field extractions to the events.command.
-Performing KV extractions on the data. Cumulative across REPORT, EXTRACT,KV_MODE, AUTO_KV_JSON, etc."
+Performing KV extractions on the data. Cumulative across REPORT, EXTRACT,
+KV_MODE, AUTO_KV_JSON, etc."
 Search job inspector,Search job properties,,label,,Custom name created for this search.
 Search job inspector,Search job properties,,latestTime,,The latest time a search job is configured to start. Can be used to indicate progress. See description for doneProgress.
 Search job inspector,Execution costs of dispatched searches,dispatch,localSearch,,
@@ -330,8 +296,7 @@ Search job inspector,Execution costs of dispatched searches,dispatch,preview,,Th
 Search job inspector,Search job properties,,priority,,"lets you improve the the run priority of a deferred scheduled report. This means that it may run ahead of other reports, and may have a better chance of running on or near its scheduled run time."
 Search job inspector,Execution costs of dispatched searches,dispatch,process_remote_timeline,,The time spent decoding timeline information generated by search peers.
 Search job inspector,Search job properties,,provenance,,"One of the following search sources: cli, rest, ui:<App>:<View>"
-Search job inspector,Execution costs of search commands,command.search,rawdata,,"tells how long it took to read the actual events from the rawdata files.
-Uncompressing the raw data to retrieve events."
+Search job inspector,Execution costs of search commands,command.search,rawdata,,tells how long it took to read the actual events from the rawdata files.
 Search job inspector,Execution costs of dispatched searches,dispatch,readEventsInResults,,
 Search job inspector,Execution costs of dispatched searches,dispatch,reduce,,The time spend reducing the intermediate report output.
 Search job inspector,Search job properties,,remoteSearch,,"The search string that is sent to every search peer.
@@ -359,7 +324,7 @@ Search job inspector,Execution costs of search commands,command,search.*,,"After
 Search job inspector,Search job properties,,search.log,,Links to further information about your search. These links may not always be available
 Search job inspector,Search job properties,,searchCanBeEventType,,"If the search can be saved as an event type, this will be 1, otherwise, 0.Only base searches (no subsearches or pipes) can be saved as event types."
 Search job inspector,Search job properties,,searchEarliestTime,,
-Search job inspector,Search job properties,,searchLatestTime,,The latest time a search job is configured to start.
+Search job inspector,Search job properties,,searchLatestTime,,
 Search job inspector,Search job properties,,searchProviders,,A list of all the search peers that were contacted.
 Search job inspector,Search job properties,,searchTotalBucketsCount,,How many indexing buckets were searched.  (searched_buckets)
 Search job inspector,Search job properties,,searchTotalEliminatedBucketsCount,,How many of those that were eliminated (usually by bloom filters). (eliminated_buckets)
@@ -392,4 +357,3 @@ Search job inspector,Search job properties,,ttl,,"The time to live, or time befo
 Search job inspector,Execution costs of search commands,command.search,typer,,tells how long it took to assign event types to events. Finding eventtypes.
 Search job inspector,Search job properties,,workload_pool,,
 Search job inspector,Execution costs of dispatched searches,dispatch,writeStatus,,The time spent periodically updating status.csv and info.csv in the job's dispatch directory.
-_internal,splunkd_remote_searches,,elapsedTime,,"The amount of time the indexer spent working on this search. Includes time spent waiting for search head to receive data, so not exactly the time spent working, but it's the closest thing we have."

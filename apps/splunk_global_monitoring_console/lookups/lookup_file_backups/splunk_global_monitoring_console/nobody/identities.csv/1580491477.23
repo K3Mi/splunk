@@ -1,7 +1,7 @@
 Identity,Name,Title,Phone,Email,Emp_Type,Emp_Status,City,State,Country,Region,Location_Code,Floor_Number,startDate,endDate,Department,LOB,Cost_Center,Manager,Contractor_Expiration
 ADMIN,First Last,Professional Services Consultant,123-456-7899,user1@splunk.com,Default-Account,Active,Grand Rapids,MI,United States,West,GRR,7,1/1/2016,,Professional Services,Customer Success,11111,Manager1,
-TCHASE,First Last,"SVP, Chief Technology Officer",123-456-7899,user2@splunk.com,Employee,Active,Ausit,TX,United States,West,AUS,7,1/1/2020,,Engineering,Products,22222,Manager2,
-I729921,First Last,Professional Services Consultant,123-456-7899,user3@splunk.com,Contractor,Active,Wilmington,DE,United States,West,PHL,7,1/1/2020,,Professional Services,Customer Success,33333,Manager3,5/1/2020
+TCHASE,First Last,Professional Services Consultant,123-456-7899,user2@splunk.com,Employee,Active,Ausit,TX,United States,West,SFO,7,1/1/2020,,Professional Services,Customer Success,22222,Manager2,
+I729921,First Last,Professional Services Consultant,123-456-7899,user3@splunk.com,Contractor,Active,Wilmington,DE,United States,West,SFO,7,1/1/2020,,Professional Services,Customer Success,33333,Manager3,5/1/2020
 AMIR,First Last,Professional Services Consultant,123-456-7899,user4@splunk.com,Employee,Active,San Francisco,MI,United States,Mid-West,GRR,7,1/1/2019,,Professional Services,Customer Success,44444,Manager4,
 SPLUNK-SYSTEM-USER,First Last,Professional Services Consultant,123-456-7899,user5@splunk.com,Default-Account,Active,San Francisco,CA,United States,West,SFO,7,1/1/2019,,Professional Services,Customer Success,111111,Manager5,
-DPAPER,First Last,Sr. Escalation Manager & Technical Smokejumper,123-456-7899,user6@splunk.com,Employee,Active,"Washington, D.C.",DC,United States,East,DCA,7,1/1/2019,,Customer Success ,Customer Success,333333,Manager6,
+DPAPER,,Sr. Escalation Manager & Technical Smokejumper,123-456-7899,user5@splunk.com,Employee,Active,"Washington, D.C.",DC,United States,East,DCA,7,1/1/2019,,Customer Success ,Customer Success,333333,Manager6,

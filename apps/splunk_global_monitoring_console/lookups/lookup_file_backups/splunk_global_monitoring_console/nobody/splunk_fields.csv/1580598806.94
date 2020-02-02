@@ -392,4 +392,3 @@ Search job inspector,Search job properties,,ttl,,"The time to live, or time befo
 Search job inspector,Execution costs of search commands,command.search,typer,,tells how long it took to assign event types to events. Finding eventtypes.
 Search job inspector,Search job properties,,workload_pool,,
 Search job inspector,Execution costs of dispatched searches,dispatch,writeStatus,,The time spent periodically updating status.csv and info.csv in the job's dispatch directory.
-_internal,splunkd_remote_searches,,elapsedTime,,"The amount of time the indexer spent working on this search. Includes time spent waiting for search head to receive data, so not exactly the time spent working, but it's the closest thing we have."

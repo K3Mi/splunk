@@ -80,7 +80,7 @@ modtime = 1579754379.103849000
 
 [lookups/identities.csv]
 version = 8.0.1
-modtime = 1579907468.237922000
+modtime = 1580491768.033273000
 
 [transforms/identity_lookup]
 access = read : [ * ], write : [ admin, power ]
@@ -115,7 +115,7 @@ modtime = 1580270422.901748000
 [lookups/splunk_fields.csv]
 owner = admin
 version = 8.0.1
-modtime = 1580482206.653248000
+modtime = 1580610073.049701000
 
 [transforms/splunk_fields_lookup]
 access = read : [ * ], write : [ admin, power ]
@@ -127,7 +127,7 @@ modtime = 1579922161.656199000
 [views/help]
 owner = admin
 version = 8.0.1
-modtime = 1580482341.925856000
+modtime = 1580490819.480311000
 
 [savedsearches/splunk_fields_lookup_update]
 access = read : [ * ], write : [ admin, power ]
@@ -174,7 +174,7 @@ modtime = 1580401720.988282000
 [views/readme]
 owner = admin
 version = 8.0.1
-modtime = 1580262932.995673000
+modtime = 1580490860.686866000
 
 [savedsearches/splunk_sh_rest_data_props_extractions_csv_lookup_report]
 version = 8.0.1
@@ -476,3 +476,7 @@ modtime = 1580357476.135065000
 [views/splunk_sh_03_knowledge_objects_analysis_dashboard_v3]
 version = 8.0.1
 modtime = 1580401915.200309000
+
+[views/splunk_sh_02_audit_search_activity_dashboard_v4]
+version = 8.0.1
+modtime = 1580508779.827124000

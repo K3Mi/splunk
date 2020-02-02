@@ -1,5 +1,5 @@
 <form theme="dark">
-  <label>Internal Indexes &amp; sourcetypes Field Help</label>
+  <label>Fields Help</label>
   <search id="Help">
     <query>
 | inputlookup splunk_fields_lookup 

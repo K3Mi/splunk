@@ -1,0 +1,24 @@
+host_name,app_name,biz_unit,biz_dep,perc_ownership
+host123,app1,bunit1,department1,100
+host456,app2,bunit2,department2,100
+,apps_starting_with*,bunit3,department3,100
+,*apps_ending_with,bunit4,department4,100
+,*apps_containing*,bunit5,department5,100
+,cloud_administration,Splunk Cloud,Splunk Cloud,100
+,chargeback_app_splunk_cloud,Splunk Cloud,Splunk Cloud,100
+,*global_monitoring_console*,Splunk Cloud,Splunk Cloud,100
+,splunk_instrumentation,Splunk Cloud,Splunk Cloud,100
+,splunk_rapid_diag,Splunk Cloud,Splunk Cloud,100
+,data_manager,Splunk Cloud,Splunk Cloud,100
+,dmc,Splunk Cloud,Splunk Cloud,100
+,dynamic-data-self-storage-app,Splunk Cloud,Splunk Cloud,100
+,introspection_generator_addon,Splunk Cloud,Splunk Cloud,100
+,prometheus,Splunk Cloud,Splunk Cloud,100
+,python_upgrade_readiness_app,Splunk Cloud,Splunk Cloud,100
+,splunk_instance_monitoring,Splunk Cloud,Splunk Cloud,100
+,splunk_internal_metrics,,,100
+,splunk_metrics_workspace,,,100
+,splunk_product_guidance,,,100
+,splunk_secure_gateway,,,100
+,splunk-dashboard-studio,,,100
+,splunkclouduf,,,100

@@ -1,0 +1,77 @@
+| remove this line to reset the app lookup files to factory defaults 
+| makeresults 
+| append 
+    [| inputlookup chargeback_entitlements_csv.csv ] 
+| eval type=if(isnull(type), "SVC", type), entitlement=if(isnull(entitlement), "100", entitlement), yearly_cost=if(isnull(yearly_cost), "1234567", yearly_cost) 
+| table type, entitlement, yearly_cost 
+| outputlookup chargeback_entitlements_csv.csv createinapp=true create_empty=true override_if_empty=false 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_bunit_allocations_csv.csv ] 
+    | eval biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep), biz_owner=if(isnull(biz_owner), "biz_owner1", biz_owner), svc=if(isnull(svc), "5", svc), if(isnull(ddas), "200", ddas), ddaa=if(isnull(ddaa), "200", ddaa), ddss=if(isnull(ddss), "200", ddss) 
+    | table biz_unit, biz_dep, biz_owner, biz_email, svc, ddas, ddaa, ddss 
+    | outputlookup chargeback_bunit_allocations_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_user_2_bunit_csv.csv ] 
+    | eval user_name=if(isnull(user_name), "user_name1", user_name), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep), name=if(isnull(name), "name1", name), type=if(isnull(type), "type1", type), title=if(isnull(title), "title1", title), email=if(isnull(email), "email1", email), manager=if(isnull(manager), "manager1", manager) 
+    | table user_name, biz_unit, biz_dep, name, type, title, email, manager 
+    | outputlookup chargeback_user_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_manager_2_bunit_csv.csv ] 
+    | eval manager_name=if(isnull(manager_name), "manager_name1", manager_name), manager_id=if(isnull(manager_id), "manager_id1", manager_id), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep) 
+    | table manager_name, manager_id, biz_unit, biz_dep 
+    | outputlookup chargeback_manager_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_role_2_bunit_csv.csv ] 
+    | eval role_name=if(isnull(role_name), "role_name1", role_name), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep) 
+    | table role_name, biz_unit, biz_dep 
+    | outputlookup chargeback_role_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_app_2_bunit_csv.csv ] 
+    | eval host_name=if(isnull(host_name), "host_name1", host_name), app_name=if(isnull(app_name), "app_name1", app_name), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep) 
+    | table host_name, app_name, biz_unit, biz_dep 
+    | outputlookup chargeback_app_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_job_2_bunit_csv.csv ] 
+    | eval job_name=if(isnull(job_name), "job_name1", job_name), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep) 
+    | table job_name, biz_unit, biz_dep 
+    | outputlookup chargeback_job_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_index_2_bunit_csv.csv ] 
+    | eval index_name=if(isnull(index_name), "index_name1", index_name), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep), perc_ownership=if(isnull(perc_ownership), "100", perc_ownership) 
+    | table index_name, biz_unit, biz_dep, perc_ownership 
+    | outputlookup chargeback_index_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_host_2_bunit_csv.csv ] 
+    | eval host_name=if(isnull(host_name), "host_name1", host_name), label=if(isnull(label),"label",label), biz_unit=if(isnull(biz_unit), "bunit1", biz_unit), biz_dep=if(isnull(biz_dep), "dep1", biz_dep) 
+    | table host_name, label, biz_unit, biz_dep 
+    | outputlookup chargeback_host_2_bunit_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_app_help_csv.csv ] 
+    | eval field=if(isnull(field), "field1", field), description=if(isnull(description), "description1", description), info=if(isnull(info), "info1", info), url=if(isnull(url), "url1", url) 
+    | table field, description, info, url 
+    | outputlookup chargeback_app_help_csv.csv createinapp=true create_empty=true override_if_empty=false] 
+| union 
+    [| makeresults 
+    | append 
+        [| inputlookup chargeback_cloud_stack_info_csv.csv ] 
+    | eval fqdn=if(isnull(fqdn), "fqdn1", fqdn), name=if(isnull(name), "name1", name), label=if(isnull(label), "label1", label) 
+    | table fqdn,name,label 
+    | outputlookup chargeback_cloud_stack_info_csv.csv createinapp=true create_empty=true override_if_empty=false]
